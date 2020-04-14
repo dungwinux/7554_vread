@@ -9,7 +9,7 @@
 ## Building
 
 -   No additional library required!
--   Use your favorite compiler to compile.
+-   Use your favorite compiler to compile. (C++11 support is required)
 -   (Optional) Define `LENGTH` (_default is 4096_) higher if you have enough memory
 -   Enjoy!
 
@@ -19,6 +19,6 @@
 
 `.\7554_vread [filename]`
 
-### License
+## License
 
 MIT License. Copyright (c) 2020 Nguyễn Tuấn Dũng
