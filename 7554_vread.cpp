@@ -26,34 +26,43 @@ int main(int argc, char **argv)
     }
 
     std::string filename(argv[1]);
-    auto outname = filename + ".zip";
+    bool isDotZip = filename.find_last_of(".zip") == filename.length() - 1;
+
+    auto basename = filename.substr(0, filename.find_last_of('.'));
+    auto outname = isDotZip ? basename + ".v" : basename + ".zip";
 
     std::cout << "Input: " << filename << '\n'
               << "Output: " << outname << '\n';
 
     std::ifstream f_inp(filename, f_inp.in | f_inp.binary);
-    std::ofstream f_out(outname, f_out.out | f_out.binary | f_out.trunc);
-
-    if (!f_inp.is_open())
+    if (f_inp.is_open())
     {
-        std::cout << "Failed to open " << filename << '\n';
+        std::ofstream f_out(outname, f_out.out | f_out.binary | f_out.trunc);
+        if (f_out.is_open())
+        {
+            while (!f_inp.eof())
+            {
+                char buffer[LENGTH];
+                f_inp.read(buffer, LENGTH);
+                int real_len = f_inp.gcount();
+                for (int i = 0; i < real_len; i++)
+                {
+                    buffer[i] ^= key;
+                }
+                f_out.write(buffer, real_len);
+            }
+            f_out.close();
+        }
+        else
+        {
+            std::cerr << "Failed to open " << outname << '\n';
+        }
+        f_inp.close();
+        std::cout << "Done !!\n";
     }
     else
     {
-        while (!f_inp.eof())
-        {
-            char buffer[LENGTH];
-            f_inp.read(buffer, LENGTH);
-            int real_len = f_inp.gcount();
-            for (int i = 0; i < real_len; i++)
-            {
-                buffer[i] ^= key;
-            }
-            f_out.write(buffer, real_len);
-        }
-        f_inp.close();
-        f_out.close();
-        std::cout << "Done !!\n";
+        std::cerr << "Failed to open " << filename << '\n';
     }
 
     return 0;
